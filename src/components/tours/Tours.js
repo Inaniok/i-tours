@@ -1,4 +1,5 @@
 import ToursItem from '../tours-item';
+import './Tours.css';
 
 const Tours = (props) => {
 	const toursArray = [
@@ -38,12 +39,25 @@ const Tours = (props) => {
 			description: 'Best tour for discover Asia',
 		},
 	];
+	const _getStyle = (nameOfTheme) => {
+		if (nameOfTheme === 'dark') {
+			return {
+				background: '#000',
+				color: '#fff',
+			};
+		}
+		return {
+			background: '#fff',
+			color: '#000',
+		};
+	};
+
 	return (
-		<section>
-			<h1>Tours page:{props.baz}</h1>
+		<section className='tours-page' style={_getStyle(props.theme)}>
+			<h1>Tours page</h1>
 			<ul>
 				{toursArray.map((tour) => {
-					return <ToursItem key={tour.id} {...tour} />;
+					return <ToursItem key={tour.id} {...tour} theme={props.theme} />;
 				})}
 			</ul>
 			{props.children}

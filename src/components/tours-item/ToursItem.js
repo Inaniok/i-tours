@@ -1,8 +1,22 @@
 import PropTypes from 'prop-types';
 
-const ToursItem = ({ name, price, continent, description }) => {
+import './ToursItem.css';
+
+const ToursItem = ({ name, price, continent, description, theme }) => {
+	const _getTheme = (nameOfTheme) => {
+		if (nameOfTheme === 'dark') {
+			return {
+				background: '#fff',
+				color: '#000',
+			};
+		}
+		return {
+			background: '#000',
+			color: '#fff',
+		};
+	};
 	return (
-		<li>
+		<li className='tours-item' style={_getTheme(theme)}>
 			<p>Name:{name}</p>
 			<p>Price:{price}</p>
 			<p>Continent{continent}:</p>
