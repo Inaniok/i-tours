@@ -39,7 +39,6 @@ const Tours = (props) => {
 			description: 'Best tour for discover Asia',
 		},
 	];
-	console.log(props.theme);
 
 	return (
 		<section className='tours-page'>

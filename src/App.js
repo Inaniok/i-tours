@@ -5,6 +5,7 @@ import Tours from './components/tours';
 import { DARK, LIGHT } from 'constants';
 
 import './App.scss';
+import clsx from 'clsx';
 
 class App extends Component {
 	state = {
@@ -18,9 +19,13 @@ class App extends Component {
 	render() {
 		const { theme } = this.state;
 		return (
-			<div className='app-container'>
+			<div
+				className={clsx('app-container', {
+					'dark-theme': theme === DARK,
+					'light-theme': theme === LIGHT,
+				})}>
 				<Header theme={theme} onToggle={this.handleToggleTheme}></Header>
-				<Tours></Tours>
+				<Tours theme={theme}></Tours>
 			</div>
 		);
 	}
