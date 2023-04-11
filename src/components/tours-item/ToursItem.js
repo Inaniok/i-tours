@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
 
 import './ToursItem.css';
+import clsx from 'clsx';
+import { LIGHT, DARK } from 'constants';
 
 const ToursItem = ({ name, price, continent, description, theme }) => {
-	const _getTheme = (nameOfTheme) => {
-		if (nameOfTheme === 'dark') {
-			return {
-				background: '#fff',
-				color: '#000',
-			};
-		}
-		return {
-			background: '#000',
-			color: '#fff',
-		};
-	};
 	return (
-		<li className='tours-item' style={_getTheme(theme)}>
+		<li
+			className={clsx('tours-item', {
+				'dark-theme': theme === LIGHT,
+				'light-theme': theme === DARK,
+			})}>
 			<p>Name:{name}</p>
 			<p>Price:{price}</p>
 			<p>Continent{continent}:</p>

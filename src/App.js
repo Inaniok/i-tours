@@ -1,19 +1,29 @@
+import { Component } from 'react';
 import Header from './components/header';
 import Tours from './components/tours';
 
-import { DARK } from 'constants';
+import { DARK, LIGHT } from 'constants';
 
 import './App.scss';
 
-const App = () => {
-	const theme = DARK;
+class App extends Component {
+	state = {
+		theme: DARK,
+	};
 
-	return (
-		<div className='app-container'>
-			<Header theme={theme}></Header>
-			<Tours theme={theme}></Tours>
-		</div>
-	);
-};
+	handleToggleTheme = () => {
+		this.setState((state) => ({ theme: state.theme === DARK ? LIGHT : DARK }));
+	};
+
+	render() {
+		const { theme } = this.state;
+		return (
+			<div className='app-container'>
+				<Header theme={theme} onToggle={this.handleToggleTheme}></Header>
+				<Tours></Tours>
+			</div>
+		);
+	}
+}
 
 export default App;

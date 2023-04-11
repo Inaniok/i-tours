@@ -39,28 +39,16 @@ const Tours = (props) => {
 			description: 'Best tour for discover Asia',
 		},
 	];
-	const _getStyle = (nameOfTheme) => {
-		if (nameOfTheme === 'dark') {
-			return {
-				background: '#000',
-				color: '#fff',
-			};
-		}
-		return {
-			background: '#fff',
-			color: '#000',
-		};
-	};
+	console.log(props.theme);
 
 	return (
-		<section className='tours-page' style={_getStyle(props.theme)}>
+		<section className='tours-page'>
 			<h1>Tours page</h1>
 			<ul>
 				{toursArray.map((tour) => {
-					return <ToursItem key={tour.id} {...tour} theme={props.theme} />;
+					return <ToursItem key={tour.id} {...tour} {...props} />;
 				})}
 			</ul>
-			{props.children}
 		</section>
 	);
 };
