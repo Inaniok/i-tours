@@ -1,0 +1,16 @@
+.tours-page {
+	padding: 20px 40px;
+
+	&__controlls {
+		display: grid;
+		grid-template-columns: 200px 300px 200px;
+		align-items: center;
+		grid-column-gap: 30px;
+		input {
+			padding: 5px 10px;
+			outline: none;
+			border: none;
+			border-radius: 4px;
+		}
+	}
+}
