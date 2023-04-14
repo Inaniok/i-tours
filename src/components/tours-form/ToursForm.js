@@ -10,7 +10,8 @@ const continentOptions = [
 	'Africa',
 	'North America',
 	'South America',
-	'Antarctica, Europe',
+	'Antarctica',
+	'Europe',
 	'Australia',
 ];
 
@@ -19,10 +20,11 @@ const initialState = {
 	price: '',
 	continent: '',
 	description: '',
+	selectedContinents: [],
 };
 
 class ToursForm extends Component {
-	state = [...initialState];
+	state = { ...initialState };
 
 	handleChangeValueInState = ({ target: { name, value } }) => {
 		this.setState({
@@ -30,8 +32,29 @@ class ToursForm extends Component {
 		});
 	};
 
+	handleToggleCheckedContinents = (e, continent) => {
+		const snapshot = [...this.state.selectedContinents];
+		const value = e.target.checked;
+
+		if (value) {
+			// Add to arr
+
+			snapshot.push(continent);
+		} else {
+			// Remove from arr
+
+			const index = snapshot.findIndex((el) => el === continent);
+			index >= 0 && snapshot.splice(index, 1);
+		}
+
+		this.setState({
+			selectedContinents: snapshot,
+		});
+	};
+
 	handleSubmit = (e) => {
 		e.preventDefault();
+
 		const newTour = {
 			...this.state,
 			id: Math.round(Math.random() * 1000000),
@@ -44,7 +67,7 @@ class ToursForm extends Component {
 
 	render() {
 		const { visible, onClose } = this.props;
-		const { name, price, continent, description } = this.state;
+		const { name, price, continent, description, selectedContinents } = this.state;
 
 		return (
 			<Rodal visible={visible} onClose={onClose} height={600}>
@@ -53,7 +76,7 @@ class ToursForm extends Component {
 
 					<form onSubmit={this.handleSubmit}>
 						<input
-							type='radion'
+							type='text'
 							name='name'
 							className='default-input'
 							placeholder='tour name...'
@@ -61,8 +84,8 @@ class ToursForm extends Component {
 							onChange={this.handleChangeValueInState}
 						/>
 						<input
-							type='radion'
-							name='name'
+							type='text'
+							name='price'
 							className='default-input'
 							placeholder='tour price...'
 							value={price}
@@ -76,9 +99,22 @@ class ToursForm extends Component {
 							onChange={this.handleChangeValueInState}>
 							<option value='' disabled></option>
 							{continentOptions.map((el) => (
-								<option value={el}>{el}</option>
+								<option key={el} value={el}>
+									{el}
+								</option>
 							))}
 						</select>
+
+						{/* {continentOptions.map((el) => (
+							<label className='default-input' key={el}>
+								<input
+									type='checkbox'
+									checked={selectedContinents.includes(el)}
+									onChange={(e) => this.handleToggleCheckedContinents(e, el)}
+								/>
+								{el}
+							</label>
+						))} */}
 
 						<textarea
 							column={10}
