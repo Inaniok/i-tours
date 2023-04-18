@@ -13,7 +13,7 @@ const ToursItem = ({ name, price, continent, description, theme }) => {
 			})}>
 			<p>Name:{name}</p>
 			<p>Price:{price}</p>
-			<p>Continent{continent}:</p>
+			<p>Continent:{continent}</p>
 			{description && <p>Description:{description}</p>}
 		</li>
 	);

@@ -67,7 +67,7 @@ class ToursForm extends Component {
 
 	render() {
 		const { visible, onClose } = this.props;
-		const { name, price, continent, description, selectedContinents } = this.state;
+		const { name, price, continent, description } = this.state;
 
 		return (
 			<Rodal visible={visible} onClose={onClose} height={600}>
@@ -84,7 +84,7 @@ class ToursForm extends Component {
 							onChange={this.handleChangeValueInState}
 						/>
 						<input
-							type='text'
+							type='number'
 							name='price'
 							className='default-input'
 							placeholder='tour price...'
