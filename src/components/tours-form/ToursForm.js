@@ -20,7 +20,6 @@ const initialState = {
 	price: '',
 	continent: '',
 	description: '',
-	selectedContinents: [],
 };
 
 class ToursForm extends Component {
@@ -52,15 +51,10 @@ class ToursForm extends Component {
 		});
 	};
 
-	handleSubmit = (e) => {
+	handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const newTour = {
-			...this.state,
-			id: Math.round(Math.random() * 1000000),
-		};
-
-		this.props.onAddFunc(newTour);
+		this.props.onAddFunc({ ...this.state });
 		this.setState(initialState);
 		this.props.onClose();
 	};

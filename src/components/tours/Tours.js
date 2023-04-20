@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 
 import './Tours.scss';
 import ToursForm from 'components/tours-form/ToursForm';
-import { fetchTours } from 'api';
+import { addTour, deleteTourById, fetchTours } from 'api/tours';
 import moment from 'moment';
 
 class Tours extends Component {
@@ -13,6 +13,7 @@ class Tours extends Component {
 		query: '',
 		visibleModal: false,
 		isLoading: false,
+		isError: false,
 		lastUpdateTime: null,
 		tours: {
 			total_items: 0,
@@ -20,21 +21,32 @@ class Tours extends Component {
 		},
 	};
 
-	async componentDidMount() {
-		this.setState({ isLoading: true });
-		const response = await fetchTours();
+	handleFetchTours = async (query) => {
+		try {
+			this.setState({ isLoading: true });
+			const response = await fetchTours(query);
+			this.setState({
+				tours: response,
+				isLoading: false,
+			});
+		} catch (err) {
+			this.setState({ isLoading: false, isError: true });
+		}
+	};
 
-		this.setState({
-			tours: response,
-			isLoading: false,
-		});
+	async componentDidMount() {
+		this.handleFetchTours();
 	}
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
+	async componentDidUpdate(prevProps, prevState, snapshot) {
 		if (prevProps.theme !== this.props.theme) {
 			this.setState({
 				lastUpdateTime: moment().format('HH:mm:ss'),
 			});
+		}
+
+		if (prevState.query !== this.state.query) {
+			this.handleFetchTours(this.state.query);
 		}
 	}
 
@@ -46,14 +58,26 @@ class Tours extends Component {
 		this.setState((state) => ({ visibleModal: !state.visibleModal }));
 	};
 
-	handleAddTours = (tour) => {
-		this.setState((state) => ({
-			tours: [...state.tours, tour],
-		}));
+	handleAddTours = async (tour) => {
+		try {
+			await addTour(tour);
+			this.handleFetchTours.call(this);
+		} catch (err) {
+			this.setState({ isError: true });
+		}
+	};
+
+	handleDeleteTours = async (tourId) => {
+		try {
+			await deleteTourById(tourId);
+			this.handleFetchTours.call(this);
+		} catch (err) {
+			this.setState({ isError: true });
+		}
 	};
 
 	render() {
-		const { query, tours, visibleModal, isLoading, lastUpdateTime } = this.state;
+		const { tours, visibleModal, isLoading, isError, lastUpdateTime } = this.state;
 
 		return (
 			<>
@@ -82,14 +106,23 @@ class Tours extends Component {
 					{isLoading ? (
 						<div>loading...</div>
 					) : (
-						<ul>
-							<h6>Total tours:{tours.total_items}</h6>
-							{tours.items
-								.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()))
-								.map((tour) => (
-									<ToursItem key={tour.id} {...tour} {...this.props} />
-								))}
-						</ul>
+						<>
+							{isError ? (
+								<div>Something went wrong</div>
+							) : (
+								<ul>
+									<h6>Total tours:{tours.total_items}</h6>
+									{tours.items.map((tour) => (
+										<ToursItem
+											key={tour.id}
+											onDelete={this.handleDeleteTours}
+											{...tour}
+											{...this.props}
+										/>
+									))}
+								</ul>
+							)}
+						</>
 					)}
 				</section>
 			</>
