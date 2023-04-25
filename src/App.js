@@ -6,6 +6,7 @@ import { DARK, LIGHT } from 'constants';
 
 import './App.scss';
 import clsx from 'clsx';
+import ToursHook from 'components/tours/ToursHook';
 
 class App extends Component {
 	state = {
@@ -25,7 +26,8 @@ class App extends Component {
 					'light-theme': theme === LIGHT,
 				})}>
 				<Header theme={theme} onToggle={this.handleToggleTheme}></Header>
-				<Tours theme={theme}></Tours>
+				{/* <Tours theme={theme}></Tours> */}
+				<ToursHook theme={theme} />
 			</div>
 		);
 	}

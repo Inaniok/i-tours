@@ -95,12 +95,6 @@ class Tours extends Component {
 							onChange={debounce(this.handleChangeQuery, 1000)}
 						/>
 						<button onClick={this.handleToggleModal}>Open Modal</button>
-						{lastUpdateTime && (
-							<p>
-								Last update:
-								{lastUpdateTime}
-							</p>
-						)}
 					</div>
 
 					{isLoading ? (
