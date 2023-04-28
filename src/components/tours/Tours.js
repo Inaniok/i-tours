@@ -1,127 +1,97 @@
-import React, { Component } from 'react';
-import ToursItem from '../tours-item';
-
+import { useCallback, useEffect, useState } from 'react';
+import ToursForm from 'components/tours-form/ToursForm';
+import ToursItem from 'components/tours-item/ToursItem';
 import debounce from 'lodash.debounce';
+import { fetchTours } from 'api/tours';
+import { addTour } from 'api/tours';
+import { deleteTourById } from 'api/tours';
+import { useToggle } from 'hooks/useToggle';
 
 import './Tours.scss';
-import ToursForm from 'components/tours-form/ToursForm';
-import { addTour, deleteTourById, fetchTours } from 'api/tours';
-import moment from 'moment';
 
-class Tours extends Component {
-	state = {
-		query: '',
-		visibleModal: false,
-		isLoading: false,
-		isError: false,
-		lastUpdateTime: null,
-		tours: {
-			total_items: 0,
-			items: [],
-		},
-	};
+const Tours = () => {
+	const [modalVisible, modalToggle] = useToggle();
 
-	handleFetchTours = async (query) => {
-		try {
-			this.setState({ isLoading: true });
-			const response = await fetchTours(query);
-			this.setState({
-				tours: response,
-				isLoading: false,
-			});
-		} catch (err) {
-			this.setState({ isLoading: false, isError: true });
+	const [query, setQuery] = useState('');
+	const [isLoading, setLoading] = useState(false);
+	const [isError, setError] = useState(false);
+
+	const [tours, setTours] = useState({
+		total_items: 0,
+		items: [],
+	});
+
+	const handleSetError = (response, successFunc) => {
+		if (response.error) {
+			setError(true);
+		} else {
+			successFunc();
 		}
 	};
 
-	async componentDidMount() {
-		this.handleFetchTours();
-	}
+	const handleFetchTours = useCallback(async (query) => {
+		setLoading(true);
+		const response = await fetchTours(query);
+		setLoading(false);
 
-	async componentDidUpdate(prevProps, prevState, snapshot) {
-		if (prevProps.theme !== this.props.theme) {
-			this.setState({
-				lastUpdateTime: moment().format('HH:mm:ss'),
-			});
-		}
+		handleSetError(response, () => setTours(response));
+	}, []);
 
-		if (prevState.query !== this.state.query) {
-			this.handleFetchTours(this.state.query);
-		}
-	}
+	// componentDidMount & when query were changed(componentDidUpdate) & componentWillUnmount
 
-	handleChangeQuery = ({ target: { value: query } }) => {
-		this.setState({ query });
+	useEffect(() => {
+		handleFetchTours(query);
+	}, [query, handleFetchTours]);
+
+	// componentWillUnmount
+
+	useEffect(() => () => console.log('component unmount'), []);
+
+	const handleAddTours = async (tour) => {
+		const response = await addTour(tour);
+
+		handleSetError(response, handleFetchTours);
 	};
 
-	handleToggleModal = () => {
-		this.setState((state) => ({ visibleModal: !state.visibleModal }));
+	const handleDeleteTours = async (tourId) => {
+		const response = await deleteTourById(tourId);
+
+		handleSetError(response, handleFetchTours);
 	};
 
-	handleAddTours = async (tour) => {
-		try {
-			await addTour(tour);
-			this.handleFetchTours.call(this);
-		} catch (err) {
-			this.setState({ isError: true });
-		}
-	};
+	return (
+		<>
+			<ToursForm visible={modalVisible} onClose={modalToggle} onAddFunc={handleAddTours} />
+			<section className='tours-page'>
+				<div className='tours-page__controlls'>
+					<h1>Tours page</h1>
+					<input
+						type='text'
+						placeholder='search by name...'
+						onChange={debounce((e) => setQuery(e.target.value), 1000)}
+					/>
+					<button onClick={modalToggle}>Open Modal </button>
+				</div>
 
-	handleDeleteTours = async (tourId) => {
-		try {
-			await deleteTourById(tourId);
-			this.handleFetchTours.call(this);
-		} catch (err) {
-			this.setState({ isError: true });
-		}
-	};
-
-	render() {
-		const { tours, visibleModal, isLoading, isError, lastUpdateTime } = this.state;
-
-		return (
-			<>
-				<ToursForm
-					visible={visibleModal}
-					onClose={this.handleToggleModal}
-					onAddFunc={this.handleAddTours}
-				/>
-				<section className='tours-page'>
-					<div className='tours-page__controlls'>
-						<h1>Tours page</h1>
-						<input
-							type='text'
-							placeholder='search by name...'
-							onChange={debounce(this.handleChangeQuery, 1000)}
-						/>
-						<button onClick={this.handleToggleModal}>Open Modal</button>
-					</div>
-
-					{isLoading ? (
-						<div>loading...</div>
-					) : (
-						<>
-							{isError ? (
-								<div>Something went wrong</div>
-							) : (
-								<ul>
-									<h6>Total tours:{tours.total_items}</h6>
-									{tours.items.map((tour) => (
-										<ToursItem
-											key={tour.id}
-											onDelete={this.handleDeleteTours}
-											{...tour}
-											{...this.props}
-										/>
-									))}
-								</ul>
-							)}
-						</>
-					)}
-				</section>
-			</>
-		);
-	}
-}
+				{isLoading ? (
+					<div>loading...</div>
+				) : (
+					<>
+						{isError ? (
+							<div>Something went wrong</div>
+						) : (
+							<ul>
+								<h6>Total tours:{tours.total_items}</h6>
+								{tours.items.map((tour) => (
+									<ToursItem key={tour.id} onDelete={handleDeleteTours} {...tour} />
+								))}
+							</ul>
+						)}
+					</>
+				)}
+			</section>
+		</>
+	);
+};
 
 export default Tours;
