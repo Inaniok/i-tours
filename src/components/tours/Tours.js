@@ -8,9 +8,11 @@ import { deleteTourById } from 'api/tours';
 import { useToggle } from 'hooks/useToggle';
 
 import './Tours.scss';
+import { Outlet, useParams } from 'react-router-dom';
 
 const Tours = () => {
 	const [modalVisible, modalToggle] = useToggle();
+	const { tourId } = useParams();
 
 	const [query, setQuery] = useState('');
 	const [isLoading, setLoading] = useState(false);
@@ -62,6 +64,9 @@ const Tours = () => {
 	return (
 		<>
 			<ToursForm visible={modalVisible} onClose={modalToggle} onAddFunc={handleAddTours} />
+
+			{!tourId && <Outlet />}
+
 			<section className='tours-page'>
 				<div className='tours-page__controlls'>
 					<h1>Tours page</h1>
