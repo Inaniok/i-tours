@@ -6,9 +6,9 @@ import { fetchTours } from 'api/tours';
 import { addTour } from 'api/tours';
 import { deleteTourById } from 'api/tours';
 import { useToggle } from 'hooks/useToggle';
+import { Outlet, useParams } from 'react-router-dom';
 
 import './Tours.scss';
-import { Outlet, useParams } from 'react-router-dom';
 
 const Tours = () => {
 	const [modalVisible, modalToggle] = useToggle();

@@ -1,4 +1,5 @@
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { ThemeComponent, useTheme } from 'hooks/useThemeContext';
 
 import Header from './components/header';
@@ -8,9 +9,9 @@ import clsx from 'clsx';
 import './App.scss';
 import { DARK } from 'constants';
 import { LIGHT } from 'constants';
-import Support from 'components/support/Support';
 import ContactUs from 'components/contact-us/ContactUs';
-import ToursDetails from 'components/tours-details/ToursDetails';
+
+const Support = lazy(() => import('components/support/Support'));
 
 const App = () => {
 	const { theme } = useTheme();
@@ -47,14 +48,24 @@ const App = () => {
 					))}
 				</nav>
 
-				<Routes>
-					<Route path='/tours' element={<Tours />}>
-						<Route path=':tourId' element={<ToursDetails />} />
-					</Route>
+				{true && (
+					<Suspense fallback={<div>Loading module</div>}>
+						<Support />
+					</Suspense>
+				)}
 
-					<Route path='/support' element={<Support />} />
+				<Routes>
+					<Route path='/tours' element={<Tours />} />
+					<Route
+						path='/support'
+						element={
+							<Suspense fallback={<div>Loading module</div>}>
+								<Support />
+							</Suspense>
+						}
+					/>
 					<Route path='/contact-us' element={<ContactUs />} />
-					<Route path='*' element={<div>Not found</div>} />
+					<Route path='*' element={<Navigate to='/tours' />} />
 				</Routes>
 			</div>
 		</ThemeComponent>
