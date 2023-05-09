@@ -1,16 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useToggle } from 'hooks/useToggle';
+import { Outlet, useParams } from 'react-router-dom';
+
+import { getTours } from 'store/tours/selectors';
+
 import ToursForm from 'components/tours-form/ToursForm';
 import ToursItem from 'components/tours-item/ToursItem';
+
 import debounce from 'lodash.debounce';
 import { fetchTours } from 'api/tours';
 import { addTour } from 'api/tours';
 import { deleteTourById } from 'api/tours';
-import { useToggle } from 'hooks/useToggle';
-import { Outlet, useParams } from 'react-router-dom';
 
 import './Tours.scss';
+import { addNewTour, deleteTour, fetchToursQuery } from 'store/tours/actions';
+import { TOURS_ADD_NEW } from 'store/tours/constants';
 
 const Tours = () => {
+	const dispatch = useDispatch();
 	const [modalVisible, modalToggle] = useToggle();
 	const { tourId } = useParams();
 
@@ -18,10 +26,7 @@ const Tours = () => {
 	const [isLoading, setLoading] = useState(false);
 	const [isError, setError] = useState(false);
 
-	const [tours, setTours] = useState({
-		total_items: 0,
-		items: [],
-	});
+	const tours = useSelector(getTours);
 
 	const handleSetError = (response, successFunc) => {
 		if (response.error) {
@@ -36,29 +41,30 @@ const Tours = () => {
 		const response = await fetchTours(query);
 		setLoading(false);
 
-		handleSetError(response, () => setTours(response));
+		// handleSetError(response, () => setTours(response));
 	}, []);
 
 	// componentDidMount & when query were changed(componentDidUpdate) & componentWillUnmount
 
 	useEffect(() => {
-		handleFetchTours(query);
-	}, [query, handleFetchTours]);
+		dispatch(fetchToursQuery(query));
+	}, [query, dispatch]);
 
 	// componentWillUnmount
 
 	useEffect(() => () => console.log('component unmount'), []);
 
 	const handleAddTours = async (tour) => {
-		const response = await addTour(tour);
-
-		handleSetError(response, handleFetchTours);
+		// const response = await addTour(tour);
+		// handleSetError(response, handleFetchTours);
+		dispatch(addNewTour({ ...tour, id: Math.ceil(Math.random() * 1000) }));
 	};
 
 	const handleDeleteTours = async (tourId) => {
-		const response = await deleteTourById(tourId);
+		// const response = await deleteTourById(tourId);
+		// handleSetError(response, handleFetchTours);
 
-		handleSetError(response, handleFetchTours);
+		dispatch(deleteTour(tourId));
 	};
 
 	return (

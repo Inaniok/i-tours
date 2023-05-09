@@ -48,12 +48,6 @@ const App = () => {
 					))}
 				</nav>
 
-				{true && (
-					<Suspense fallback={<div>Loading module</div>}>
-						<Support />
-					</Suspense>
-				)}
-
 				<Routes>
 					<Route path='/tours' element={<Tours />} />
 					<Route
