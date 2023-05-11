@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import './ToursItem.css';
 import clsx from 'clsx';
 import { LIGHT, DARK } from 'constants';
-import { useTheme } from 'hooks/useThemeContext';
 import { Link, useLocation } from 'react-router-dom';
 import ToursDetails from 'components/tours-details/ToursDetails';
+import { getTheme } from 'store/theme/selectors';
+import { useSelector } from 'react-redux';
 
 const ToursItem = ({ id, name, price, continent, description, onDelete }) => {
-	const { theme } = useTheme();
+	const theme = useSelector(getTheme);
+
 	const location = useLocation();
 
 	return (

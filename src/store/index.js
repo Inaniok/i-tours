@@ -1,11 +1,10 @@
-import { combineReducers, createStore } from 'redux';
-import { devToolsEnhancer } from '@redux-devtools/extension';
-import { toursReducer } from './tours/reducer';
+import { configureStore } from '@reduxjs/toolkit';
+import { toursReducer } from './tours/toursSlice';
+import { themeReducer } from './theme/reducer';
 
-const enhancer = devToolsEnhancer();
-
-const rootReducer = combineReducers({
-	tours: toursReducer,
+export const store = configureStore({
+	reducer: {
+		theme: themeReducer,
+		tours: toursReducer,
+	},
 });
-
-export const store = createStore(rootReducer, enhancer);

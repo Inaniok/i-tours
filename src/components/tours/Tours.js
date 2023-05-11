@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useToggle } from 'hooks/useToggle';
 import { Outlet, useParams } from 'react-router-dom';
+import { useToggle } from 'hooks/useToggle';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewTour, deleteTour, fetchToursQuery } from 'store/tours/toursSlice';
 import { getTours } from 'store/tours/selectors';
+
+import { fetchTours } from 'api/tours';
+import { addTour } from 'api/tours';
+import { deleteTourById } from 'api/tours';
 
 import ToursForm from 'components/tours-form/ToursForm';
 import ToursItem from 'components/tours-item/ToursItem';
 
 import debounce from 'lodash.debounce';
-import { fetchTours } from 'api/tours';
-import { addTour } from 'api/tours';
-import { deleteTourById } from 'api/tours';
 
 import './Tours.scss';
-import { addNewTour, deleteTour, fetchToursQuery } from 'store/tours/actions';
-import { TOURS_ADD_NEW } from 'store/tours/constants';
 
 const Tours = () => {
 	const dispatch = useDispatch();
@@ -47,6 +47,7 @@ const Tours = () => {
 	// componentDidMount & when query were changed(componentDidUpdate) & componentWillUnmount
 
 	useEffect(() => {
+		// console.log(toursSlice.actions.fetchToursQuery('fhjjf'));
 		dispatch(fetchToursQuery(query));
 	}, [query, dispatch]);
 
@@ -57,7 +58,7 @@ const Tours = () => {
 	const handleAddTours = async (tour) => {
 		// const response = await addTour(tour);
 		// handleSetError(response, handleFetchTours);
-		dispatch(addNewTour({ ...tour, id: Math.ceil(Math.random() * 1000) }));
+		dispatch(addNewTour({ tour }));
 	};
 
 	const handleDeleteTours = async (tourId) => {

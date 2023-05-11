@@ -1,10 +1,23 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getTheme } from 'store/theme/selectors';
+import { setTheme } from 'store/theme/actions';
+
+import { DARK } from 'constants';
+import { LIGHT } from 'constants';
+
 import { ReactComponent as LogoIcon } from 'assets/image/logo.svg';
-import { useTheme } from 'hooks/useThemeContext';
+
 import './Header.css';
 
 const Header = () => {
-	const { theme, onToggle } = useTheme();
+	const dispatch = useDispatch();
+	const theme = useSelector(getTheme);
 
+	const onToggle = () => {
+		const value = theme === DARK ? LIGHT : DARK;
+		dispatch(setTheme(value));
+	};
 	return (
 		<header>
 			<LogoIcon id='logo' />
