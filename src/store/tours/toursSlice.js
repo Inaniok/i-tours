@@ -1,7 +1,10 @@
+import { handleAddNewTourThunk, handleFetchToursQueryThunk } from './operations';
+
 const { createSlice } = require('@reduxjs/toolkit');
-const { TOURS } = require('constants');
 
 const initialState = {
+	isLoading: false,
+	error: null,
 	total_items: 0,
 	items: [],
 };
@@ -10,22 +13,6 @@ const toursSlice = createSlice({
 	name: 'tours',
 	initialState,
 	reducers: {
-		fetchToursQuery: {
-			reducer: (state, action) => {
-				state.total_items = TOURS.length;
-				state.items = TOURS.filter((el) =>
-					el.name.toLowerCase().includes(action.payload.toLowerCase())
-				);
-			},
-			prepare: (payload) => ({ payload }),
-		},
-		addNewTour: {
-			reducer: (state, action) => {
-				state.total_items += 1;
-				state.items.push({ ...action.payload, id: Math.ceil(Math.random() * 1000) });
-			},
-			prepare: (payload) => ({ payload }),
-		},
 		deleteTour: {
 			reducer: (state, action) => {
 				state.total_items -= 1;
@@ -33,17 +20,44 @@ const toursSlice = createSlice({
 			},
 			prepare: (payload) => ({ payload }),
 		},
-		deleteTo: (state, action) => {
-			const index = state.findIndex((task) => task.id === action.payload);
-			state.splice(index, 1);
-		},
 		deleteTask(state, action) {
 			const index = state.findIndex((task) => task.id === action.payload);
 			state.splice(index, 1);
 		},
 	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(handleFetchToursQueryThunk.pending, (state, action) => {
+				state.isLoading = true;
+			})
+			.addCase(handleFetchToursQueryThunk.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.error = null;
+
+				state.total_items = action.payload.total_items;
+				state.items = action.payload.items;
+			})
+			.addCase(handleFetchToursQueryThunk.rejected, (state, action) => {
+				state.isLoading = false;
+				state.error = action.payload;
+			})
+			.addCase(handleAddNewTourThunk.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(handleAddNewTourThunk.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.error = null;
+
+				state.total_items += 1;
+				state.items.push(action.payload);
+			})
+			.addCase(handleAddNewTourThunk.rejected, (state, action) => {
+				state.isLoading = false;
+				state.error = action.payload;
+			});
+	},
 });
 
-export const { fetchToursQuery, addNewTour, deleteTour } = toursSlice.actions;
+export const { deleteTour } = toursSlice.actions;
 
 export const toursReducer = toursSlice.reducer;

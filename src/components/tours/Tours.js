@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { useToggle } from 'hooks/useToggle';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewTour, deleteTour, fetchToursQuery } from 'store/tours/toursSlice';
+import { deleteTour } from 'store/tours/toursSlice';
 import { getTours } from 'store/tours/selectors';
-
-import { fetchTours } from 'api/tours';
-import { addTour } from 'api/tours';
-import { deleteTourById } from 'api/tours';
 
 import ToursForm from 'components/tours-form/ToursForm';
 import ToursItem from 'components/tours-item/ToursItem';
@@ -16,6 +12,7 @@ import ToursItem from 'components/tours-item/ToursItem';
 import debounce from 'lodash.debounce';
 
 import './Tours.scss';
+import { handleAddNewTourThunk, handleFetchToursQueryThunk } from 'store/tours/operations';
 
 const Tours = () => {
 	const dispatch = useDispatch();
@@ -23,42 +20,19 @@ const Tours = () => {
 	const { tourId } = useParams();
 
 	const [query, setQuery] = useState('');
-	const [isLoading, setLoading] = useState(false);
-	const [isError, setError] = useState(false);
 
-	const tours = useSelector(getTours);
-
-	const handleSetError = (response, successFunc) => {
-		if (response.error) {
-			setError(true);
-		} else {
-			successFunc();
-		}
-	};
-
-	const handleFetchTours = useCallback(async (query) => {
-		setLoading(true);
-		const response = await fetchTours(query);
-		setLoading(false);
-
-		// handleSetError(response, () => setTours(response));
-	}, []);
+	const { isLoading, error, total_items, items } = useSelector(getTours);
 
 	// componentDidMount & when query were changed(componentDidUpdate) & componentWillUnmount
 
 	useEffect(() => {
-		// console.log(toursSlice.actions.fetchToursQuery('fhjjf'));
-		dispatch(fetchToursQuery(query));
+		dispatch(handleFetchToursQueryThunk(query));
 	}, [query, dispatch]);
 
 	// componentWillUnmount
 
-	useEffect(() => () => console.log('component unmount'), []);
-
 	const handleAddTours = async (tour) => {
-		// const response = await addTour(tour);
-		// handleSetError(response, handleFetchTours);
-		dispatch(addNewTour({ tour }));
+		dispatch(handleAddNewTourThunk({ tour }));
 	};
 
 	const handleDeleteTours = async (tourId) => {
@@ -89,12 +63,12 @@ const Tours = () => {
 					<div>loading...</div>
 				) : (
 					<>
-						{isError ? (
-							<div>Something went wrong</div>
+						{error ? (
+							<div>{error}</div>
 						) : (
 							<ul>
-								<h6>Total tours:{tours.total_items}</h6>
-								{tours.items.map((tour) => (
+								<h6>Total tours:{total_items}</h6>
+								{items.map((tour) => (
 									<ToursItem key={tour.id} onDelete={handleDeleteTours} {...tour} />
 								))}
 							</ul>
