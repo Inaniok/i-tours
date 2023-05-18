@@ -9,13 +9,13 @@ import './App.scss';
 import { DARK } from 'constants';
 import { LIGHT } from 'constants';
 import ContactUs from 'components/contact-us/ContactUs';
-import { getTheme } from 'store/theme/selectors';
+import { selectTheme } from 'store/theme/selectors';
 import { useSelector } from 'react-redux';
 
 const Support = lazy(() => import('components/support/Support'));
 
 const App = () => {
-	const theme = useSelector(getTheme);
+	const theme = useSelector(selectTheme);
 
 	const routesName = [
 		{

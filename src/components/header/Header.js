@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getTheme } from 'store/theme/selectors';
+import { selectTheme } from 'store/theme/selectors';
 import { setTheme } from 'store/theme/actions';
 
 import { DARK } from 'constants';
@@ -12,7 +12,7 @@ import './Header.css';
 
 const Header = () => {
 	const dispatch = useDispatch();
-	const theme = useSelector(getTheme);
+	const theme = useSelector(selectTheme);
 
 	const onToggle = () => {
 		const value = theme === DARK ? LIGHT : DARK;

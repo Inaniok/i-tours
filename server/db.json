@@ -55,9 +55,6 @@
       "id": "8"
     },
     {
-      "id": "U_oz_vd"
-    },
-    {
       "name": "redux",
       "price": "100122",
       "continent": "North America",
@@ -70,6 +67,27 @@
       "continent": "Africa",
       "description": "dcdcd",
       "id": "f5BLvik"
+    },
+    {
+      "name": "rtk",
+      "price": "100122",
+      "continent": "North America",
+      "description": "dcdcdc",
+      "id": "r7UYxJK"
+    },
+    {
+      "name": "rtk2",
+      "price": "100122",
+      "continent": "South America",
+      "description": "hfvfvhvv",
+      "id": "uDC3q_v"
+    },
+    {
+      "name": "rtk3",
+      "price": "100122",
+      "continent": "South America",
+      "description": "cdcdc",
+      "id": "Ro_FOAi"
     }
   ]
 }

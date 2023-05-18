@@ -4,7 +4,7 @@ import { useToggle } from 'hooks/useToggle';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTour } from 'store/tours/toursSlice';
-import { getTours } from 'store/tours/selectors';
+import { selectTours, selectToursWithDescription } from 'store/tours/selectors';
 
 import ToursForm from 'components/tours-form/ToursForm';
 import ToursItem from 'components/tours-item/ToursItem';
@@ -13,6 +13,7 @@ import debounce from 'lodash.debounce';
 
 import './Tours.scss';
 import { handleAddNewTourThunk, handleFetchToursQueryThunk } from 'store/tours/operations';
+import { useAddNewTourMutation, useGetToursQuery } from 'store/tours/toursApi';
 
 const Tours = () => {
 	const dispatch = useDispatch();
@@ -21,18 +22,19 @@ const Tours = () => {
 
 	const [query, setQuery] = useState('');
 
-	const { isLoading, error, total_items, items } = useSelector(getTours);
+	const { data, isLoading, error } = useGetToursQuery(query);
+	const [addNewTour, result] = useAddNewTourMutation();
 
 	// componentDidMount & when query were changed(componentDidUpdate) & componentWillUnmount
 
-	useEffect(() => {
-		dispatch(handleFetchToursQueryThunk(query));
-	}, [query, dispatch]);
+	// useEffect(() => {
+	// 	dispatch(handleFetchToursQueryThunk(query));
+	// }, [query, dispatch]);
 
 	// componentWillUnmount
 
 	const handleAddTours = async (tour) => {
-		dispatch(handleAddNewTourThunk({ tour }));
+		addNewTour({ tour });
 	};
 
 	const handleDeleteTours = async (tourId) => {
@@ -41,6 +43,8 @@ const Tours = () => {
 
 		dispatch(deleteTour(tourId));
 	};
+
+	console.log(data, error);
 
 	return (
 		<>
@@ -64,11 +68,11 @@ const Tours = () => {
 				) : (
 					<>
 						{error ? (
-							<div>{error}</div>
+							<div>{error.error}</div>
 						) : (
 							<ul>
-								<h6>Total tours:{total_items}</h6>
-								{items.map((tour) => (
+								<h6>Total tours:{data.total_items}</h6>
+								{data.items.map((tour) => (
 									<ToursItem key={tour.id} onDelete={handleDeleteTours} {...tour} />
 								))}
 							</ul>

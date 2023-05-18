@@ -3,7 +3,7 @@
 
 	&__controlls {
 		display: grid;
-		grid-template-columns: 200px 300px 200px;
+		grid-template-columns: 200px 300px 200px 200px;
 		align-items: center;
 		grid-column-gap: 30px;
 		input {
@@ -11,6 +11,44 @@
 			outline: none;
 			border: none;
 			border-radius: 4px;
+		}
+
+		input[type='checkbox'] {
+			visibility: hidden;
+			&:checked + label {
+				transform: rotate(360deg);
+				background-color: #fff;
+				&:before {
+					transform: translateX(90px);
+					background-color: #000;
+				}
+			}
+		}
+
+		label {
+			display: flex;
+			width: 180px;
+			height: 90px;
+			border: 6px solid;
+			border-radius: 99em;
+			position: relative;
+			transition: transform 0.75s ease-in-out;
+			transform-origin: 50% 50%;
+			cursor: pointer;
+
+			&:before {
+				transition: transform 0.75s ease;
+				transition-delay: 0.5s;
+				content: '';
+				display: block;
+				position: absolute;
+				width: 54px;
+				height: 54px;
+				background-color: #fff;
+				border-radius: 50%;
+				top: 12px;
+				left: 12px;
+			}
 		}
 	}
 }
