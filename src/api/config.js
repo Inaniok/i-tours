@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { API_URL } from 'constants/api';
+import { API_AUTH_URL } from 'constants/api';
 
 const HTTPClient = axios.create({
-	baseURL: API_URL,
+	baseURL: API_AUTH_URL,
 });
 
 export default HTTPClient;

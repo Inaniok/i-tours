@@ -1,0 +1,32 @@
+.auth {
+	position: relative;
+	height: 96.5vh;
+	background: #c9c9c9;
+	color: #000;
+	padding: 20px 40px;
+
+	&-container {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: #fff;
+		padding: 20px 40px;
+
+		form {
+			display: grid;
+			grid-template-columns: 400px;
+			row-gap: 16px;
+			padding: 20px 40px;
+
+			.auth-label {
+				display: block;
+			}
+			.auth-input {
+				display: block;
+				padding: 5px 10px;
+				font-size: 16px;
+			}
+		}
+	}
+}

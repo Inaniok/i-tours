@@ -1,12 +1,15 @@
+import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
+import { selectTheme } from 'store/theme/selectors';
+import { LIGHT, DARK } from 'constants';
+
+import ToursDetails from 'components/tours-details/ToursDetails';
 
 import './ToursItem.css';
-import clsx from 'clsx';
-import { LIGHT, DARK } from 'constants';
-import { Link, useLocation } from 'react-router-dom';
-import ToursDetails from 'components/tours-details/ToursDetails';
-import { selectTheme } from 'store/theme/selectors';
-import { useSelector } from 'react-redux';
 
 const ToursItem = ({ id, name, price, continent, description, onDelete }) => {
 	const theme = useSelector(selectTheme);
